@@ -1,0 +1,5 @@
+a) int exponent darf nicht 0 oder negativ sein
+
+b) numArray muss mindestens 1 Element beinhalten
+
+c) laenge u breite darf nicht negativ sein -> Bedingung im Konstruktor stellen

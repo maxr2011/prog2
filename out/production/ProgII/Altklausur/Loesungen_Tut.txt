@@ -1,0 +1,196 @@
+1a) Exceptions
+
+public class FalscheIBANException extends Exception{
+
+	public FalscheIBANException(){
+		super("FEHLER: Datei enthält ungültige IBAN");
+	}
+	
+	public FalscheIBANException(String message){
+		super(message);
+	}
+
+}
+
+1b) Exceptions
+boolean ibanCheck(String IBAN){
+
+	boolean la = (IBAN.charAt(0) == "D") && (IBAN.charAt(1) == "E");
+	boolean le = IBAN.length() == 20;
+
+	if(la && le) return true
+	else throw new FalscheIBANException(IBAN + " ist keine gültige IBAN.");
+	
+}
+
+1c) Streams, Exceptions
+void ibanAusDateiLesen(String datname){
+
+	BufferedFileReader bf = new BufferedFileReader(FileInputStream(datname));
+	
+	try{
+		
+		boolean alleGültig = false;
+		while((String TEXT = bf.readLine()) != null){
+		
+			alleGültig = ibanCheck(TEXT);
+		
+		}
+	
+	} catch(NullPointerException n){
+		System.out.println("Datei "+datname+" existiert nicht");
+	} catch(FileNotFoundException f){
+		System.out.println("Datei "+datname+" nicht gefunden");
+	} catch(IOException e){
+		//e.printStackStrace();
+		System.out.println("Fehler bei Lesevorgang von Datei: "+datname+"");
+	}
+	
+	if(alleGültig) System.out.println("Erfolg");
+
+}
+
+1d)	Exceptions
+
+void dateienLesen(String[] dateien) 
+	throws IOException, FileNotFoundException, NullPointerException {
+
+	for(int i = 0; i < dateien.length; i++){
+		ibanAusDateiLesen(dateien[i]);
+	}
+
+}
+
+
+
+1e)	JUnit-Tests
+public class ibanCheckTest{
+
+	@Test
+	void ibanCheckT() throws FalscheIBANException {
+		
+		boolean b = IBANCheck.ibanCheck("DE..");
+		boolean c = IBANCheck.ibanCheck("FR..");
+		assertEqual(true, b);
+		assertEqual(false, c);
+	
+	}
+
+}
+
+
+2) Collections, Comparable, 
+
+public class WortVorkommen<E, V>{
+
+	HashMap<E, V> WV;
+	//V lastPos;
+	
+	public WortVorkommen(){
+		
+		WV = new HashMap<E, V>;
+	
+	}
+	
+	void einfuegen(E, V){
+	
+		WV.put(E, V);
+		//lastPos = V;
+		
+	}
+	
+	V holeLetztePosition(E){
+		return WV.get(E);
+	}
+
+	ArrayList<V> holeAlle(E){
+		ArrayList<V> AL = new ArrayList<V>();
+		for(V v : WV){
+			AL.add(v);
+		}
+		return AL;
+	}
+	
+	int anzahlVorkommen(E){
+		ArrayList<V> ALL = holeAlle(E);
+		int i = 0;
+		for(V v : ALL){
+			i++;
+		}
+		return i;
+	}
+	
+	int compareTo(V v1, V v2){
+		return v1.compareTo(v2);
+	}
+
+}
+
+3a. Builder Pattern
+
+---- Beispiel Builder Pattern --- 
+public class Person{
+
+	private String vorname;
+	private String nachname;
+	private String geburtstag;
+	private int koerpergroesse;
+	private String wohnort;
+	
+	private Person(String vn, String nn, String bd){
+		this.vorname = vn;
+		this.nachname = nn;
+		this.geburtstag = bd;
+	}
+	
+	private Person(String vn, String nn, String bd, int i, String s){
+		this.vorname = vn;
+		this.nachname = nn;
+		this.geburtstag = bd;
+		this.koerpergroesse = i;
+		this.wohnort = s;
+	}
+
+	public class PersonBuilder{
+	
+		public String vorname;
+		public String nachname;
+		public String geburtstag;
+		public int koerpergroesse;
+		public String wohnort;
+		public Warenkorb WW;
+		
+		public PersonBuilder(String vn, String nn, String bd){
+			this.vorname = vn;
+			this.nachname = nn;
+			this.geburtstag = bd;
+		}
+		
+		PersonBuilder withKoerpergroesse(int i){
+			this.koerpergroesse = i;
+			return this;
+		}
+		
+		PersonBuilder withWohnort(String s){
+			this.wohnort = s;
+			return this;
+		}
+		
+		Person build(){
+			return new Person(vorname, nachname, geburtstag, koerpergroesse, wohnort);
+		}	
+	
+	}
+
+}
+------------
+
+3a) Kunde k = new Kunde("John", "Doe", "01.01.1900")
+		.withWarenkorb(
+			new Warenkorb(3, artikel)
+			.withPosten("Posten");
+		)
+		.build();
+		
+
+3b) 
